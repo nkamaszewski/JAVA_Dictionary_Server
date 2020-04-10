@@ -5,7 +5,7 @@ import java.util.Map;
 public class DictionaryServerRequestHandler extends Thread {
     private Socket mainServerSocket = null;
 
-    public DictionaryServerRequestHandler(Socket mainServerSocket, Map<String, String> dictionary){
+    public DictionaryServerRequestHandler(Socket mainServerSocket){
         this.mainServerSocket = mainServerSocket;
     }
 
@@ -15,7 +15,7 @@ public class DictionaryServerRequestHandler extends Thread {
             String ClientRequestPayload = in.readLine();
             in.close();
             mainServerSocket.close();
-            System.out.println("Handler Request, received: " + ClientRequestPayload);
+            System.out.println("received: " + ClientRequestPayload + " from Main Server");
             String[] splitedPayload = ClientRequestPayload.split(",");
 
             String wordToTranslate = splitedPayload[0];
@@ -28,7 +28,13 @@ public class DictionaryServerRequestHandler extends Thread {
             PrintWriter out = new PrintWriter (
                     new OutputStreamWriter(clientSocket.getOutputStream(), "UTF8"),
                     true);
-            out.write(translatedWord);
+            // there is not that word in dictionary
+            if(translatedWord == null){
+                out.write("Error! " + wordToTranslate + " - that word is not avalaible in dictionary");
+            } else {
+                out.write(translatedWord);
+            }
+
             out.close();
             clientSocket.close();
         } catch (IOException e) {

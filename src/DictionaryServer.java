@@ -31,7 +31,7 @@ public class DictionaryServer {
         }
 
         try {
-            File myObj = new File(args[1]);
+            File myObj = new File(dictionaryFileName);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -53,7 +53,7 @@ public class DictionaryServer {
                 System.out.println("Dictionary Server Log: server listening on port: " + selfPort );
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Dictionary Server Log: Main Server sends request");
-                new DictionaryServerRequestHandler(clientSocket, dictionary).start();
+                new DictionaryServerRequestHandler(clientSocket).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

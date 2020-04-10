@@ -19,29 +19,39 @@ public class ServerRequestHandler extends Thread{
             in.close();
             clientSocket.close();
 
-            System.out.println("Handler Request: received: " + ClientRequestPayload);
             String[] splitedPayload = ClientRequestPayload.split(",");
 
-
-
             if(splitedPayload[0].equals("_dict")){
+                System.out.println("Received: " + ClientRequestPayload + " from dictionary server");
                 String language = splitedPayload[1];
                 String dictPort = splitedPayload[2];
                 Server.serversAddresses.put(language, dictPort);
             } else {
+                System.out.println("Received: " + ClientRequestPayload + " from Client request");
                 String wordToTranslate = splitedPayload[0];
                 String language = splitedPayload[1];
                 String ClientPort = splitedPayload[2];
 
+                String dPort = Server.serversAddresses.get(language);
 
-                int destPort = Integer.parseInt(Server.serversAddresses.get(language));
-                Socket dictionarySocket = new Socket("localhost", destPort);
-                PrintWriter out = new PrintWriter (
-                        new OutputStreamWriter(dictionarySocket.getOutputStream()),
-                        true);
-                out.write(wordToTranslate + ",localhost," + ClientPort);
-                out.close();
-                dictionarySocket.close();
+                // there is no language in dictionaries
+                if(dPort == null){
+                    Socket errorResponseSocket = new Socket("localhost", Integer.parseInt(ClientPort));
+                    PrintWriter out = new PrintWriter (new OutputStreamWriter(errorResponseSocket.getOutputStream()),
+                                    true);
+                    out.write("Error! Language " + language + " is not supported");
+                    out.close();
+                    errorResponseSocket.close();
+                } else {
+                    int destPort = Integer.parseInt(Server.serversAddresses.get(language));
+                    Socket dictionarySocket = new Socket("localhost", destPort);
+                    PrintWriter out = new PrintWriter (
+                            new OutputStreamWriter(dictionarySocket.getOutputStream()),
+                            true);
+                    out.write(wordToTranslate + ",localhost," + ClientPort);
+                    out.close();
+                    dictionarySocket.close();
+                }
             }
 
         } catch (IOException e) {
