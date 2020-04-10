@@ -1,0 +1,1 @@
+start java DictionaryServer 55002 it.txt

@@ -31,8 +31,8 @@ public class DictionaryServer {
         }
 
         try {
-            File myObj = new File(dictionaryFileName);
-            Scanner myReader = new Scanner(myObj);
+            File file = new File("dictionaries\\" + dictionaryFileName);
+            Scanner myReader = new Scanner(file);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 String[] splitedData = data.split(",");
