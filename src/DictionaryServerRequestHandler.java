@@ -1,10 +1,11 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.Map;
 
 public class DictionaryServerRequestHandler extends Thread {
     private Socket mainServerSocket = null;
 
-    public DictionaryServerRequestHandler(Socket mainServerSocket){
+    public DictionaryServerRequestHandler(Socket mainServerSocket, Map<String, String> dictionary){
         this.mainServerSocket = mainServerSocket;
     }
 
@@ -14,15 +15,20 @@ public class DictionaryServerRequestHandler extends Thread {
             String ClientRequestPayload = in.readLine();
             in.close();
             mainServerSocket.close();
-            System.out.println("Handler Request: Otrzymano w zapytaniu: " + ClientRequestPayload);
+            System.out.println("Handler Request, received: " + ClientRequestPayload);
             String[] splitedPayload = ClientRequestPayload.split(",");
 
-            Socket clientSocket = new Socket(splitedPayload[1], Integer.parseInt(splitedPayload[2]));
+            String wordToTranslate = splitedPayload[0];
+            String ClientAddress = splitedPayload[1];
+            String ClientPort = splitedPayload[2];
 
+            Socket clientSocket = new Socket(ClientAddress, Integer.parseInt(ClientPort));
+
+            String translatedWord = DictionaryServer.dictionary.get(wordToTranslate);
             PrintWriter out = new PrintWriter (
                     new OutputStreamWriter(clientSocket.getOutputStream(), "UTF8"),
                     true);
-            out.write("przetlumaczone slowo");
+            out.write(translatedWord);
             out.close();
             clientSocket.close();
         } catch (IOException e) {

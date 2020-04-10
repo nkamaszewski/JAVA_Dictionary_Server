@@ -1,1 +1,1 @@
-start java DictionaryServer 55000
+start java DictionaryServer 55000 eng.txt

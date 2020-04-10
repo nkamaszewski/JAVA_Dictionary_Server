@@ -31,7 +31,7 @@ public class Client extends Application {
 
 
         translateButton.setOnAction(actionEvent -> {
-            translatedWord.setText(clientService.translateWord(wordField.getText(), "ENG"));
+            translatedWord.setText(clientService.translateWord(wordField.getText(), countryCodeField.getText()));
         });
 
 

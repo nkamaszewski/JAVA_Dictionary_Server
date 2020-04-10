@@ -1,0 +1,5 @@
+kot,chat
+pies,chien
+tygrys,tigre
+rzeka,riviere
+las,foret
